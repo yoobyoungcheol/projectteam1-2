@@ -68,31 +68,7 @@ def make_set(track, label):
     data = tr.change_json()
     save_data(data)
 
-# 객체 탐지 -> 저장+이미지 리턴
-def tracking_object(image:np.array):
-    results= model.track(frame, persist=True)  # 추적 활성화
-    # persist=True 인수는 트래커에게 현재 이미지 또는 프레임이 시퀀스의 다음 이미지이며 현재 이미지에서 이전 이미지의 트랙을 예상하도록 지시
-    #class_names = model.names
-    boxes = results[0].boxes.xywh.int().cpu()  # ultralytics library
-    annotated_frame = results[0].plot().copy()  # 시각화 배열
-    class_ids = results[0].boxes.cls.int().cpu().tolist()
-    track_ids = results[0].boxes.id.int().cpu().tolist()  # boxes id 정보를 int 형태 list로  cpu로 이동
 
-    for result in results:
-        data = result.to_json()
-        save_data(data)
-        for box, track_id, class_id in zip(boxes, track_ids,  class_ids):
-            x, y, w, h = box
-            track = track_history[track_id]  # 추적 기록
-            track.append((float(x), float(y)))  # x, y 포인트 추적기록에 추가
-            if len(track) > 30:  # retain 90 tracks for 90 frames
-                track.pop(0)
-
-            # # Draw the tracking lines
-            points = np.hstack(track).astype(np.int32).reshape((-1, 1, 2))
-            cv2.polylines(annotated_frame, [points], isClosed=False, color=(230, 230, 230), thickness=10)
-    cv2.imshow("tracking", annotated_frame)
-    return image
 
 # 객체탐지 반복루프:main 실행시
 if __name__=='__main__':
