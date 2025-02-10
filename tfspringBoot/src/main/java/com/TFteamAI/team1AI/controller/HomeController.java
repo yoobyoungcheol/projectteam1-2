@@ -10,9 +10,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @CrossOrigin(origins = "백엔드 서버 IP")
 public class HomeController {
 
+    @GetMapping("/main")
+    public String main() {
+
+        return "main";
+    }
+
     @GetMapping("/ai")
     public String viewAi() {
 
         return "ai";
+    }
+
+    @GetMapping("/data")
+    public String jsonData() {
+
+        return "dataReceive";
     }
 }

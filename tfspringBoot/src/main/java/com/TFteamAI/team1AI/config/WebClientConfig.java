@@ -17,7 +17,7 @@ public class WebClientConfig {
     WebClient webClient() {
         return WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()
-                        .codecs(configuere -> configuere.defaultCodecs().maxInMemorySize(-1)).build())
+                        .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)).build())
                 .baseUrl(pythonServer)
                 .build();
     }

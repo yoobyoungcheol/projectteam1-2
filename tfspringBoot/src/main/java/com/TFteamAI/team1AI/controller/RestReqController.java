@@ -3,13 +3,12 @@ package com.TFteamAI.team1AI.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/tf/*")
@@ -32,5 +31,13 @@ public class RestReqController {
                 .block();
         System.out.println("result 수행------");
         return result;
+    }
+
+    @PostMapping("/dataReceive")
+    public Map<String, Object> receiveJson(@RequestBody Map<String, Object> receive) {
+
+        System.out.println("JSON Data : " + receive);
+        return receive;
+
     }
 }

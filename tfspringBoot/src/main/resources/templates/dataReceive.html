@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON 데이터 </title>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+<body>
+
+<h1> 데이터 받기 </h1>
+
+<pre id="data-output">데이터 기다리는중</pre>
+<!-- <pre> 태그는 미리 서식을 지정한 텍스트를 나타내며, HTML에 작성한 내용 그대로 표현합니다 -->
+
+<script type="text/javascript">
+  const broker = 'ws://파이썬 Server IP:9001';
+  const topic = 'cam/objects';
+
+  const client = mqtt.connect(broker);
+
+  client.on('connect', () => {
+      console.log("브로커 연결 성공");
+      client.subscribe(topic, (err) => {
+          if (!err) {
+              console.log(`토픽 구독: ${topic}`);
+          }
+      });
+  });
+
+  client.on('message', (topic, message) => {
+      try {
+          const data = JSON.parse(message.toString());
+
+          document.getElementById('data-output').innerHTML =
+                    `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+          // 화면에표시하기 위해 textContent 대신 innerHTML을 사용하여 브라우저 화면에 데이터 띄운다.
+
+          console.log('데이터 수신:', data);
+
+      } catch (e) {
+          console.error('JSON 파싱 실패:', e);
+      }
+  });
+
+  client.on('error', (error) => {
+      console.error("연결 오류 : ", error);
+      document.getElementById('data-output').textContent =
+          '브로커 연결 오류 발생';
+  });
+</script>
+</body>
+</html>
