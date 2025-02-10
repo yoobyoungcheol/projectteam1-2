@@ -11,8 +11,8 @@
       height: 100%;
     }
     img#cameraView {
-      max-width: 100%;
-      max-height: 100%;
+      max-width: 50%;
+      max-height: 50%;
       bottom: 0;
       left: 0;
       right: 0;
@@ -26,20 +26,26 @@
 <body>
 <h1>MQTT Client Example</h1>
 <div align="center">
-  <img id="cameraView" width="100%" height="100%">
+  <img id="cameraView" width="80%" height="80%">
+</div>
+
+<!-- result 값 나오는 곳-->
+<div id="result" style="text-align: center; margin-top: 20px;">
+<h2>결과 : </h2>
+  <p id="resultText"> 데이터 기다리는 중. . . </p>
 </div>
 
 <script type="text/javascript">
-  const broker = 'ws://파이썬 Server IP :9001';
+  const broker = 'ws://파이썬 Server IP:9001';
   const topic = 'cam/objects';
 
   const client = mqtt.connect(broker);
 
   client.on("connect", () => {
-    console.log("Connected to broker");
+    console.log("브로커 연결 성공");
     client.subscribe(topic, (err) => {
       if(!err) {
-        console.log(`Subscribed to topic: ${topic}`);
+        console.log(`토픽 구독 : ${topic}`);
       }
     })
   })
@@ -50,17 +56,19 @@
       const base64Image = payload.image;
       const img = document.getElementById("cameraView")
       img.src = `data:image/jpg;base64,${base64Image}`;
+
+    document.getElementById("resultText").innerText = payload.result || "결과 없음";  // result에 결과 값 표시
     }catch(e) {
       console.error('Failed to parse message: ', e);
     }
   })
 
   client.on("error", (error) => {
-    console.error("connection error: ", error);
+    console.error("연결 오류 : ", error);
   })
 
   client.on("close", ()=> {
-    console.log("Disconnected from broker");
+    console.log("브로커와 연결되지 않습니다. 담당자에게 확인하세요.");
   })
 </script>
 </body>
