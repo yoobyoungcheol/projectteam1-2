@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 의류 영상 스트리밍</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<th:block th:replace="~{common/header.html}"></th:block>
+
+<main class="container text-center">
+        <h2>실시간 영상</h2>
+        <img id="video-stream" src="/video-stream" alt="영상 스트리밍">
+
+</main>
+
+<th:block th:replace="~{common/footer.html}"></th:block>
+</body>
+</html>

@@ -1,118 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Main</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-footer {
-   margin-top: 0 !important;
-}
-
-footer h5 {
-   color: #fff;
-   margin-bottom: 1rem;
-   font-weight: 600;
-}
-
-footer ul li {
-   margin-bottom: 0.5rem;
-   color: #adb5bd;
-}
-
-footer .text-muted {
-   color: #6c757d !important;
-}
-
-footer hr {
-   margin: 1rem 0;
-   opacity: 0.1;
-}
-
-footer i {
-   margin-right: 0.5rem;
-}
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TF Team</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<h1> TF AI Project </h1>
-<a href="ai">실시간 스트리밍</a>
+<th:block th:replace="~{common/header.html}"></th:block>
 
-
-<!-- 본문 -->
-<br>
-본문
-
-<!-- Footer -->
-<footer class="bg-dark text-light py-4 mt-5">
-    <div class="container">
-        <div class="row">
-
-            <!-- Team Project 정보  -->
-            <div class="col-md-4 mb-3">
-                <h5>Python + Spring Boot AI Project</h5>
-                <p class="mb-0">1조 TF Team Project </p>
-
-                <small class="text-muted">© 2025 All rights reserved</small>
+<main>
+    <section class="hero">
+        <div class="row gy-5">
+            <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+                <h2>TF Team</h2>
+                <p>실시간 영상으로 의류 객체를 탐지하여 실내 온도 조절 하는 시스템을 개발하고자 함.</p>
             </div>
-
-            <!-- Team Member -->
-            <div class="col-md-4 mb-3">
-                <h5>Team Members</h5>
-                <ul class="list-unstyled">
-                    <li>조장: 유병철</li>
-                    <li>조원: 김지선</li>
-                    <li>조원: 이영훈</li>
-                </ul>
-            </div>
-
-            <!-- Contact -->
-            <div class="col-md-4 mb-3">
-                <h5>Contact</h5>
-                <ul class="list-unstyled">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"></path>
-                    </svg> 조장 : 유병철
-                    <a href="https://github.com/yoobyoungcheol" class="text-decoration-none">
-                        https://github.com/yoobyoungcheol
-                    </a><br>
-
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"></path>
-                    </svg> 조원 : 김지선
-                    <a href="https://github.com/jsKim-prog" class="text-decoration-none">
-                        https://github.com/jsKim-prog
-                    </a><br>
-
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"></path>
-                    </svg> 조원 : 이영훈
-                    <a href="https://github.com/Leeyounghun94" class="text-decoration-none">
-                        https://github.com/Leeyounghun94
-                    </a><br><br>
-
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"></path>
-                    </svg> Team Project GitHub
-                    <a href="https://github.com/yoobyoungcheol/projectteam1-2" class="text-decoration-none">
-                        https://github.com/yoobyoungcheol/projectteam1-2
-                    </a>
-                </ul>
+            <div class="col-lg-6 order-1 order-lg-2">
+                <img th:src="@{/img/computer.png}" alt="컴퓨터 이미지" class="img-fluid">
             </div>
         </div>
 
-        <!-- 하단 구분 및 기타 -->
-        <div class="row mt-3">
-            <div class="col">
-                <hr class="bg-secondary">
-                <div class="text-center text-muted">
-                    <small>Made with by 1조 TF Team | MBC Academy Education Suwon</small>
+        <div class="menu-container">
+        <div class="row gy-4 mt-5">
+            <a href="/tf/ai" class="col-md-6 col-lg-3">
+                <div class="service-box">
+                    <img th:src="@{/img/free-icon-live-streaming-15260166.png}"height="70">
+                    <h3>Streaming</h3>
+                  <!--  <p>실시간 영상</p> -->
                 </div>
-            </div>
+            </a>
+
+            <a href="/tf/fashionStream" class="col-md-6 col-lg-3">
+                <div class="service-box">
+                    <img th:src="@{/img/free-icon-clothing-5208370.png}"height="70">
+                    <h3>Clothes Streaming</h3>
+                   <!-- <p>실시간으로 의류 영상 탐지 영상</p> -->
+                </div>
+            </a>
+            <a href="/tf/statistics" class="col-md-6 col-lg-3">
+                <div class="service-box">
+                    <img th:src="@{/img/free-icon-statistics-4064965.png}"height="70">
+                    <h3>데이터 분석 및 통계</h3>
+                    <!-- <p>시간대별 의류 감지 데이터</p> -->
+                   <!-- <p>계절별 패턴 분석 위한 차트</p> -->
+                </div>
+            </a>
+            <a href="#" class="col-md-6 col-lg-3">
+                <div class="service-box">
+                    <img th:src="@{/img/free-icon-settings-6704985.png}"height="64">
+                    <h3>설정</h3>
+                   <!-- <p>Model Upgrade</p> -->
+                   <!-- <p>자동, 수동 조절 선택 기능</p> -->
+                </div>
+            </a>
         </div>
-    </div>
-</footer>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        </div>
+    </section>
+
+    <section class="services-header text-center">
+        <a href="ai" class="btn btn-services">Example</a>
+        <h2>예제 <span style="color: #28a745;"> 섹션 </span></h2>
+    </section>
+
+
+
+</main>
+
+<th:block th:replace="~{common/footer.html}"></th:block>
 </body>
 </html>

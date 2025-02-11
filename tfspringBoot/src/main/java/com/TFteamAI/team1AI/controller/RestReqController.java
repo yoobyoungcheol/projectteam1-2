@@ -1,5 +1,7 @@
 package com.TFteamAI.team1AI.controller;
 
+import com.TFteamAI.team1AI.entity.Fashion;
+import com.TFteamAI.team1AI.repository.FashionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -8,12 +10,17 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/tf/*")
 @CrossOrigin(origins = "백엔드 서버 IP")
 public class RestReqController {
+
+    @Autowired
+    private FashionRepository fashionRepository;
 
     @Autowired
     private WebClient webClient;
@@ -34,10 +41,31 @@ public class RestReqController {
     }
 
     @PostMapping("/dataReceive")
-    public Map<String, Object> receiveJson(@RequestBody Map<String, Object> receive) {
+    public Map<String, Object> receiveJson(@RequestBody List<Map<String, Object>> receive) {
 
         System.out.println("JSON Data : " + receive);
-        return receive;
 
+        // JSON 데이터 수신하기 위한 PostMapping
+        for (Map<String, Object> obj : receive) {
+            String name = (String) obj.get("name");
+            Float confidence = (Float) obj.get("confidence");
+            Integer trackId = (Integer) obj.get("trackId");
+
+            Fashion fashion = new Fashion();
+            fashion.setName(name);
+            fashion.setConfidence(confidence);
+            fashion.setTrackId(trackId);
+            fashion.setReceiveTime(LocalDateTime.now());
+            fashion.setCount(1);
+
+
+            try {
+                fashionRepository.save(fashion);
+            } catch (Exception e) {
+                System.out.println("DB 데이터 저장 실패 : " + e.getMessage());
+            }
+
+        }
+        return Map.of("status", "success", "data", receive);
     }
 }

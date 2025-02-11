@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JSON 데이터 </title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
 <body>
+<th:block th:replace="~{common/header.html}"></th:block>
 
 <h1> 데이터 받기 </h1>
 
@@ -49,5 +52,6 @@
           '브로커 연결 오류 발생';
   });
 </script>
+<th:block th:replace="~{common/footer.html}"></th:block>
 </body>
 </html>
