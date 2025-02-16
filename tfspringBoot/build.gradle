@@ -45,7 +45,7 @@ dependencies {
 
 	// MQTT 설정 관련 코드
 	// https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
-	implementation group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.2.5'
+	implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 	// https://mvnrepository.com/artifact/org.springframework/spring-messaging
 	implementation group: 'org.springframework', name: 'spring-messaging', version: '6.2.1'
 	// Spring Integration MQTT
