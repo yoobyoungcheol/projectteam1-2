@@ -2,10 +2,6 @@ package com.TFteamAI.team1AI.dto.fashion;
 
 public class FashionDataDTO {
 
-    private int outerRatio;
-    private int mixedRatio;
-    private int innerRatio;
-
     private int coat;
     private int jacket;
     private int jumper;
@@ -17,6 +13,9 @@ public class FashionDataDTO {
     private int shirt;
     private int sweater;
 
+    private int outerRatio;
+    private int mixedRatio;
+    private int innerRatio;
 
 
     public FashionDataDTO(int outerRatio, int mixedRatio, int innerRatio) {
@@ -44,11 +43,8 @@ public class FashionDataDTO {
 
 
         int outer = coat + jacket + jacket + jumper + padding;  // 아우터 계산
-
         int mixed = vest + cardigan + blouse;   // 이너&아우터 계산
-
         int inner = top + sweater + shirt;// 이너 계산
-
         int total = outer + mixed + inner;  // total 변수에다가 모든 항목 합치기
         if (total == 0) total = 1;  // 0으로 나누기 방지
 

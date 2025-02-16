@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${board.boardTitle}">게시글 상세보기</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/board.css">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+</head>
+<body>
+<div th:replace="~{common/header :: header}"></div>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="mb-0" th:text="${board.boardTitle}"></h2>
+          <div class="board-info">
+            <span class="me-3">작성자: <span th:text="${board.boardWrite}"></span></span>
+            <span class="me-3">조회수: <span th:text="${board.viewCount}"></span></span>
+            <span class="me-3">좋아요: <span th:text="${board.likeCount}"></span></span>
+            <span>작성일: <span th:text="${#temporals.format(board.createDate, 'yyyy-MM-dd HH:mm')}"></span></span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="board-content mb-4" th:text="${board.boardContent}"></div>
+          <div class="board-actions text-center">
+            <form th:action="@{/tf/board/{id}/like(id=${board.boardId})}" method="post" style="display: inline;">
+              <button type="submit" class="btn btn-outline-danger me-2">
+                <i class="bi bi-heart-fill"></i>
+                좋아요 <span class="badge bg-danger" th:text="${board.likeCount}"></span>
+              </button>
+            </form>
+            <a th:href="@{/tf/board/{id}/edit(id=${board.boardId})}" class="btn btn-primary me-2">수정</a>
+            <form th:action="@{/tf/board/{id}/delete(id=${board.boardId})}" method="post" style="display: inline;">
+              <button type="submit" class="btn btn-danger me-2"
+                      onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+            </form>
+            <a href="/tf/board/list" class="btn btn-secondary">목록으로</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div th:replace="~{common/footer :: footer}"></div>
+</body>
+</html>

@@ -30,7 +30,7 @@ public class HomeController {
 
     @GetMapping("/ai")
     public String viewAi() {
-        // ai.html(실시간 영상) 열어주는 GetMapping
+        // 실시간 의류 영상 스트리밍 페이지
 
         return "ai";
     }
@@ -42,12 +42,6 @@ public class HomeController {
         return "dataReceive";
     }
 
-    @GetMapping("/fashionStream")
-    public String fashionStreamPage() {
-        // 실시간 의류 영상 스트리밍 페이지(fashionStream.html)
-
-        return "/fashion/fashionAi";
-    }
     @GetMapping("/statistics")
     public String FashionDetectionPage(Model model) {
         // 실시간 의류 영상의 데이터 통계를 보여주는 페이지(fashionStatistics.html)

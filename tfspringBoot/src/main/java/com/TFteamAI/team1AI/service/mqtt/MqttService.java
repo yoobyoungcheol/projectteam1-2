@@ -2,51 +2,40 @@ package com.TFteamAI.team1AI.service.mqtt;
 
 import com.TFteamAI.team1AI.dto.fashion.FashionDataDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
+import lombok.extern.log4j.Log4j2;
 import org.eclipse.paho.client.mqttv3.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.CompletableFuture;
-
 @Service
+@Log4j2
 public class MqttService implements MqttCallback {
 
-    private final String BROKER = "tcp://파이썬 Server IP:1883";
-    private final String CLIENT_ID = "springboot_client";
-    private final String TOPIC = "cam/objects"; // 파이썬 서버의 TOPIC과 일치
-    private MqttClient mqttClient;
+    private final MqttClient mqttClient;
+    private final String topic;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     // 최신 탐지 데이터를 저장할 변수
     private FashionDataDTO updateFashionData = new FashionDataDTO(0, 0, 0);
 
-    @PostConstruct
-    public void init() {
+    @Autowired
+    public MqttService(MqttClient mqttClient, @Value("${mqtt.topic}") String topic) {
+        this.mqttClient = mqttClient;
+        this.topic = topic;
 
-        CompletableFuture.runAsync(() -> {
-            try {
-                System.out.println("MQTT 브로커 연결 시도 중...");
-                mqttClient = new MqttClient(BROKER, CLIENT_ID);
-                mqttClient.setCallback(this);
-
-                MqttConnectOptions options = new MqttConnectOptions();
-                options.setAutomaticReconnect(true);
-                options.setCleanSession(true);
-                options.setConnectionTimeout(1);
-
-                mqttClient.connect(options);
-                mqttClient.subscribe(TOPIC);
-                System.out.println("MQTT 브로커 연결 성공!");
-            } catch (Exception e) {
-                System.err.println("MQTT 연결 실패 : " + e.getMessage());
-            }
-        });
+        try {
+            this.mqttClient.setCallback(this);
+            this.mqttClient.subscribe(topic);
+            log.info("MQTT 구독 설정 완료");
+        } catch (MqttException e) {
+            log.error("MQTT 구독 실패: " + e.getMessage());
+        }
     }
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         String payload = new String(message.getPayload());
-
         try {
             // 파이썬에서 보낸 JSON 데이터 파싱
             var jsonData = objectMapper.readTree(payload);
@@ -63,20 +52,18 @@ public class MqttService implements MqttCallback {
             int top = jsonData.get("top").asInt();
             int shirt = jsonData.get("shirt").asInt();
             int sweater = jsonData.get("sweater").asInt();
-
             updateFashionData = new FashionDataDTO(coat, jacket, jumper, padding, vest, cardigan, blouse, top, shirt, sweater);
-
-            System.out.println("Received image data from Python server");
-            System.out.println("Update Fashion Data : " + updateFashionData);
+            log.info("Received image data from Python server");
+            log.info("Update Fashion Data : " + updateFashionData);
 
         } catch (Exception e) {
-            System.err.println("Error processing message: " + e.getMessage());
+            log.error("Error processing message: " + e.getMessage());
         }
     }
 
     @Override
     public void connectionLost(Throwable cause) {
-        System.out.println("Connection lost: " + cause.getMessage());
+        log.error("Connection lost: " + cause.getMessage());
     }
 
     @Override
@@ -85,7 +72,6 @@ public class MqttService implements MqttCallback {
     }
 
     public FashionDataDTO getFasionData() {
-
         return updateFashionData;
     }
 }

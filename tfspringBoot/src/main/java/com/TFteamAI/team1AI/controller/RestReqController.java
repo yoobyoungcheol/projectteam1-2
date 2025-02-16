@@ -1,7 +1,7 @@
 package com.TFteamAI.team1AI.controller;
 
-import com.TFteamAI.team1AI.entity.Fashion;
-import com.TFteamAI.team1AI.repository.FashionRepository;
+import com.TFteamAI.team1AI.entity.fashion.Fashion;
+import com.TFteamAI.team1AI.repository.fashion.FashionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;

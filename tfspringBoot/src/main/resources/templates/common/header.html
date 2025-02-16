@@ -1,13 +1,24 @@
-<header>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/header.css">
+</head>
+<body>
+<header th:fragment="header" class="header">
   <div class="header-content">
-    <h1 class="header-title">TF Team</h1>
+    <h1 class="logo">
+      <a href="/tf/main">TF <span>Team</span></a>
+    </h1>
     <nav>
       <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">소개</a></li>
-        <li><a href="#">게시판</a></li>
-        <li><a href="#">이용 문의</a></li>
+        <li><a href="/tf/main">Home</a></li>
+        <li><a href="/tf/board/list">Memo</a></li>
+        <li><a href="/tf/data">Data</a></li>
+        <li><a href="/tf/contact">Setting</a></li>
       </ul>
     </nav>
   </div>
 </header>
+</body>
+</html>
