@@ -28,18 +28,18 @@ public class HomeController {
         return "main";
     }
 
-    @GetMapping("/ai")
-    public String viewAi() {
+    @GetMapping("ai")
+    public String viewfashionAi() {
         // 실시간 의류 영상 스트리밍 페이지
 
-        return "ai";
+        return "fashion/ai";
     }
 
     @GetMapping("/data")
     public String jsonData() {
         // Python Server에서 JSON 데이터 수신하기 위한 페이지(dataReceive.html) 열어주는 GetMapping
 
-        return "dataReceive";
+        return "fashion/dataReceive";
     }
 
     @GetMapping("/statistics")

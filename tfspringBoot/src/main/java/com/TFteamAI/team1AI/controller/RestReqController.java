@@ -1,9 +1,11 @@
 package com.TFteamAI.team1AI.controller;
 
+import com.TFteamAI.team1AI.dto.fashion.FashionTemperature;
 import com.TFteamAI.team1AI.entity.fashion.Fashion;
 import com.TFteamAI.team1AI.repository.fashion.FashionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,5 +69,24 @@ public class RestReqController {
 
         }
         return Map.of("status", "success", "data", receive);
+    }
+
+    @PostMapping("/temperature/save")
+    public ResponseEntity<?> saveTemperature(@RequestBody FashionTemperature temper) {
+        // 온도 설정 저장 PostMapping
+
+        try {
+            double temperature = temper.getTemperature();
+
+            if (temperature < 16 || temperature > 30) {
+
+                return ResponseEntity.badRequest().body(Map.of("error", "온도는 16°C 와 30°C 사이여야 합니다."));
+            }// 온도 유효성 검사
+
+            return ResponseEntity.ok().body(Map.of("message",  "설정 온도 : " + temperature + "°C"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "온도 설정 실패 : " + e.getMessage()));
+        }
     }
 }
