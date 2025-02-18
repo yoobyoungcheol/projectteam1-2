@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Table(name = "board")
 public class Board {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardId;   // board 테이블 고유 ID
@@ -32,11 +31,13 @@ public class Board {
 
     private LocalDateTime updateDate;   // board 게시글 수정일자
 
-    @Column(columnDefinition = "INT DEFAULT 0")
-    private int viewCount;  // 조회수
+    //02.17 추가
+    @Column(nullable = false)
+    private String category; // "TEMPERATURE"
 
-    @Column(columnDefinition = "INT DEFAULT 0")
-    private int likeCount; // 좋아요
+    private Float setTemperature; // 설정된 온도 저장
+
+    private String detectedClothes; // 탐지된 의류 정보
 
     /*
     Hibernate:
@@ -51,5 +52,17 @@ public class Board {
         view_count INT DEFAULT 0,
         primary key (board_id)
     ) engine=InnoDB
+
+    02.17 추가
+    Hibernate:
+    alter table if exists board
+       add column category varchar(255) not null
+    Hibernate:
+    alter table if exists board
+       add column detected_clothes varchar(255)
+    Hibernate:
+    alter table if exists board
+       add column set_temperature float(23)
+
      */
 }

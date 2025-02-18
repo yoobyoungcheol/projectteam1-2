@@ -2,9 +2,7 @@ package com.TFteamAI.team1AI.entity.fashion;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +11,8 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 @Table(name = "fashion")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Fashion {
 
     @Id
@@ -30,6 +30,13 @@ public class Fashion {
 
     private Integer count;  //개수
 
+    public Fashion(String name, Float confidence, Integer trackId, LocalDateTime receiveTime, Integer count) {
+        this.name = name;
+        this.confidence = confidence;
+        this.trackId = trackId;
+        this.receiveTime = receiveTime;
+        this.count = count;
+    }
     /*
 
     Hibernate:

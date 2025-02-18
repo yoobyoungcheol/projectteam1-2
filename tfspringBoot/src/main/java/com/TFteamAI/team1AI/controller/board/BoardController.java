@@ -28,7 +28,6 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public String viewBoard(@PathVariable Long id, Model model) {
-        boardService.incrementViewCount(id);
         Board board = boardService.getBoardById(id);
         model.addAttribute("board", board);
         return "board/view";
@@ -66,9 +65,4 @@ public class BoardController {
         return "redirect:/tf/board/list";
     }
 
-    @PostMapping("/{id}/like")
-    public String likeBoard(@PathVariable Long id) {
-        boardService.incrementLikeCount(id);
-        return "redirect:/tf/board/" + id;
-    }
 }

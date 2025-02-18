@@ -49,10 +49,9 @@ public class MqttService implements MqttCallback {
             int vest = jsonData.get("vest").asInt();
             int cardigan = jsonData.get("cardigan").asInt();
             int blouse = jsonData.get("blouse").asInt();
-            int top = jsonData.get("top").asInt();
             int shirt = jsonData.get("shirt").asInt();
             int sweater = jsonData.get("sweater").asInt();
-            updateFashionData = new FashionDataDTO(coat, jacket, jumper, padding, vest, cardigan, blouse, top, shirt, sweater);
+            updateFashionData = new FashionDataDTO(coat, jacket, jumper, padding, vest, cardigan, blouse, shirt, sweater);
             log.info("Received image data from Python server");
             log.info("Update Fashion Data : " + updateFashionData);
 

@@ -92,11 +92,11 @@
   barChartInstance = new Chart(ctx, {
           type: 'bar',  //차트의 종류 지정 bar -> 원형 차트
           data: {
-              labels: ['코트', '자켓', '점퍼', '패딩', '조끼', '가디건', '블라우스', '상의', '셔츠', '스웨터'],
+              labels: ['코트', '자켓', '점퍼', '패딩', '조끼', '가디건', '블라우스', '셔츠', '스웨터'],
               datasets: [{
                   label: '탐지된 의류 개수',
                   data: [data.coat, data.jacket, data.shirt, data.jumper, data.padding, data.vest, data.cardigan,
-                  data.blouse, data.top, data.sweater],
+                  data.blouse, data.sweater],
                   backgroundColor: '#36a2eb'
               }]
           },
@@ -138,7 +138,6 @@
     {name: "조끼", count: data.vest },
     {name: "가디건", count: data.cardigan },
     {name: "블라우스", count: data.blouse },
-    {name: "상의", count: data.top },
     {name: "셔츠", count: data.shirt },
     {name: "스웨터", count: data.sweater }
 
