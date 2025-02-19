@@ -1,85 +1,89 @@
 # pip install python-dotenv ->.env 파일에서 환경변수 값 불러오기 위함
 # pip install Pillow numpy requests ultralytics paho-mqtt opencv-python
+# pip install fastapi
+# pip install uvicorn pydantic requests -> uvicorn 만 설치됨(기존 이미 설치 완료
+# pip install fastapi-mqtt
 # mosquitto 실행(cmd) : mosquitto -c mosquitto.conf -v
 # mosquitto 종료(cmd) : net stop mosquitto
 
-import base64
-import os
-from dotenv import load_dotenv  # 환경변수파일 관리자
-import numpy as np
-import json
-from ultralytics import YOLO
-import paho.mqtt.client as mqtt  # 브로커 추가
-import cv2
+
+from fastapi import FastAPI
+from gmqtt import Client as MQTTClient
+from fastapi_mqtt import FastMQTT, MQTTConfig
+from typing import Any
+from contextlib import asynccontextmanager
+
+import pyautogui as gui # 키보드 자동화
+from tracker import *
 
 # 공통 경로/이름 정의(환경변수 값 사용)
 load_dotenv()
-MODEL_NAME = os.environ.get('BEST_MODEL')
-CAM = os.environ.get('CAM_SERVER')
 TOPIC = os.environ.get('TOPIC')
+WS_URI = os.environ.get('WS_URI')
 
-# 실행용 변수 정의
-model = YOLO(MODEL_NAME)
-client = mqtt.Client()
-client.connect('192.168.0.212', 1883, 60)
+# 앱실행 및 통신관리 : fastapi-mqtt   https://github.com/sabuhish/fastapi-mqtt
+mqtt_config = MQTTConfig(
+    host=WS_URI,
+    port=1883,
+    keepalive=60
+)
+fast_mqtt = FastMQTT(config=mqtt_config)
+@asynccontextmanager
+async def _lifespan(_app: FastAPI):
+    await fast_mqtt.mqtt_startup()
+    yield
+    await fast_mqtt.mqtt_shutdown()
 
-# 연결용 함수
-def on_connect(client, userdata, flags, rc):
-    print(f"Connected with result code {rc}")
+app = FastAPI(lifespan=_lifespan)
 
-# 객체 감지용 색상 함수
-def get_colors(num_colors):
-    np.random.seed(5)
-    colors=[tuple(np.random.randint(0, 255, 3).tolist()) for _ in range(num_colors)]
-    return colors
+@fast_mqtt.on_connect()
+def connect(client:MQTTClient, flags:int, rc:int, properties:Any):
+    client.subscribe(TOPIC) # subscribing mqtt topic
+    print("Connected: ", client, flags, rc, properties)
 
-class_names = model.names   # 모델에서 받은 클래스 이름
-num_classes = len(class_names)  # 클래스 번호
-colors = get_colors(num_classes)    # 라벨링 박스 컬러색
+@fast_mqtt.on_disconnect()
+def disconnect(client:MQTTClient, packet, exc=None):
+    print("Disconnected")
 
-client.on_connect = on_connect
+#cam 클래스 연결
+my_cam = MyCam()
+cap = my_cam.cam
+@app.get("/")
+async def client():
+    fast_mqtt.publish(TOPIC, "Hello")
+    return {"result":True, "message":"Published"}
 
-# ipCam 연결
-def cam_run():
-    cap = cv2.VideoCapture(CAM) # ipcam  연결
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    cap.set(cv2.CAP_PROP_FPS, 24)
-    print(f"ipCam500 연결...")
-    return cap
-
-# 객체 탐지 -> 라벨링 이미지 리턴
-def detect_object(image:np.array):
-    results = model(image, verbose=False)
-    class_names = model.names
-
-    for result in results:
-        boxes = result.boxes.xyxy   # ultralytics library
-        confidences = result.boxes.conf
-        class_ids = result.boxes.cls
-        for box, confidence, class_id in zip(boxes, confidences, class_ids):
-            x1, y1, x2, y2 = map(int, box)
-            label = class_names[int(class_id)]
-            cv2.rectangle(image, (x1, y1), (x2, y2), colors[int(class_id)], 2)
-            cv2.putText(image, f'{label} {confidence:.2f}', (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, colors[int(class_id)])
-    return image
-
-# 객체탐지 반복루프:main 실행시
-if __name__=='__main__':
-    cap = cam_run()
+@app.get("/tracking/start")
+async def tracking_start():
     while cap.isOpened():
         ret, frame = cap.read()
-        if not ret:
+        if not ret:  # 있으면 추적
+            print("cam 연결 해제")
             break
-        result_image = detect_object(frame)
-        _, buffer = cv2.imencode('.jpg', result_image)
-        jpg_as_text = base64.b64encode(buffer).decode('utf-8')
-        payload = json.dumps({'image': jpg_as_text})
-        client.publish(TOPIC, payload)
-        cv2.imshow('Frame', result_image)
-        # 10ms 기다리고 다음 프레임으로 전환, Esc누르면 while 강제 종료
-        if cv2.waitKey(10) == 27:
+        result_frame, data = tracking(frame)
+        payload = make_payload(result_frame, data)
+        fast_mqtt.publish(TOPIC, payload)
+        cv2.namedWindow("tracking")
+        cv2.resizeWindow("tracking", 800, 600)
+        cv2.imshow("tracking", result_frame)
+        # 10ms 기다리고 다음 프레임으로 전환, q누르면 while 강제 종료
+        if cv2.waitKey(10) == ord('q'):
             break
-    cap.release()  # VideoCapure 자원해제
+    cap.release()
+    fast_mqtt.on_disconnect()
     cv2.destroyAllWindows()  # 창닫기
-    client.disconnect()
+    return 0
+
+@app.get("/tracking/end")
+async def stop_tracking():
+    my_cam.stop_cam()
+    gui.keyDown('q')
+    gui.keyUp('q')
+    fast_mqtt.on_disconnect()
+    cv2.destroyAllWindows()  # 창닫기
+    msg = {"message": "탐지 종료.... "}
+    return msg
+
+if __name__=='__main__':    # uvicorn main:app --reload
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8001)
