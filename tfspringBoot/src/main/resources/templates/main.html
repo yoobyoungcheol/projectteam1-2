@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UtopFlow</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+</head>
+<body>
+<div th:replace="~{common/header :: header}"></div>
+
+<main>
+    <section class="hero">
+        <div class="hero-container">
+            <div class="row gy-5 align-items-center">
+                <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+                    <div class="hero-content">
+                        <h1 class="UtopFlow-title">UtopFlow</h1>
+                        <p class="UtopFlow-description">
+                            <span class="highlight">AI</span>를 활용한 온도 조절 시스템으로
+                            사용자의 조절에 따라 <span class="highlight-special">'유연하게 반응하는'</span> 온도 조절 시스템을 만들어 갑니다.
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="/tf/ai" class="btn btn-primary btn-lg">시작하기</a>
+                            <a href="/tf/statistics" class="btn btn-outline-primary btn-lg">통계 보기</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 order-1 order-lg-2">
+                    <div class="hero-image-wrapper">
+                        <img th:src="@{/images/computer.png}" alt="컴퓨터 이미지" class="hero-image">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <div class="menu-container">
+            <div class="row gy-4 mt-5 justify-content-center">
+                <!-- 실시간 스트리밍 -->
+                <div class="col-md-4">
+                    <a href="/tf/ai" class="menu-box">
+                        <div class="service-box">
+                            <img th:src="@{/images/free-icon-clothing-5208370.png}" height="70">
+                            <h3>Clothes Streaming</h3>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 데이터 분석 -->
+                <div class="col-md-4">
+                    <a href="/tf/statistics" class="menu-box">
+                        <div class="service-box">
+                            <img th:src="@{/images/free-icon-statistics-4064965.png}" height="70">
+                            <h3>데이터 분석 및 통계</h3>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 설정 -->
+                <div class="col-md-4">
+                    <a href="/tf/setting" class="menu-box">
+                        <div class="service-box">
+                            <img th:src="@{/images/free-icon-settings-6704985.png}" height="64">
+                            <h3>설정</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fashion 스트리밍 섹션 -->
+    <section class="streaming-section">
+        <div class="container">
+
+            <div class="ai-streaming-title text-center">
+                <a href="ai" class="streaming-badge">Fashion Streaming</a>
+                <h2 class="streaming-text">실시간 <span class="text-success"> 의류 객체 탐지 영상</span></h2>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="stream-box">
+                        <div class="stream">
+                            <img th:src="@{/images/free-icon-fashionLive.png}" alt="AI Fashion" class="main-image">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="stream-info">
+                        <div class="info-content">
+                            <p>실시간 촬영으로 착용한 의류를 AI 기술로 객체로 탐지하여 실내 온도 조절 기반 데이터를 제공</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 데이터 분석 및 통계 섹션 -->
+    <section class="streaming-section">
+        <div class="container">
+
+            <div class="ai-streaming-title text-center">
+                <a href="/tf/statistics" class="streaming-badge">Data Statistics</a>
+                <h2 class="streaming-text">데이터<span class="text-success"> 통계 및 분석</span></h2>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="stream-box">
+                        <div class="stream">
+                            <img th:src="@{/images/free-icon-data.png}" alt="AI Fashion" class="main-image">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="stream-info">
+                        <div class="info-content">
+                            <p>데이터 시각화 및 실내 온도 조절 가이드 안내 제공</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Board 섹션 -->
+    <section class="streaming-section">
+        <div class="container">
+
+            <div class="ai-streaming-title text-center">
+                <a href="/tf/board/list" class="streaming-badge">Board</a>
+                <h2 class="streaming-text">시스템 <span class="text-success">기록, 로그, 결과 공간</span></h2>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="stream-box">
+                        <div class="stream">
+                            <img th:src="@{/images/free-icon-sticky-note-18702843.png}" alt="AI Fashion" class="main-image">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="stream-info">
+                        <div class="info-content">
+                            <p>관리자 개인 메모 공간, 시스템 운영 로그, AI 탐지 결과 기록 제공</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 설정 섹션 -->
+    <section class="streaming-section">
+        <div class="container">
+
+            <div class="ai-streaming-title text-center">
+                <a href="#" class="streaming-badge">Setting</a>
+                <h2 class="streaming-text">시스템<span class="text-success"> 관리, 기능 설정</span></h2>
+                <h2> 추후 개발 예정 중</h2>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="stream-box">
+                        <div class="stream">
+                            <img th:src="@{/images/free-icon-setting2.png}" alt="AI Fashion" class="main-image">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="stream-info">
+                        <div class="info-content">
+                            <p>시스템 관리 및 실내 온도 조절, AI기능 설정 제공</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{common/footer :: footer}"></div>
+</body>
+</html>

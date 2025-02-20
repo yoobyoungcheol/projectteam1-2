@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>실시간 의류 영상 스트리밍</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="height=device-height">
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <style>
+        .stream-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .video-wrapper {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px auto;
+            position: relative;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #cameraView {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .result-section {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        #resultText {
+            font-size: 1.2rem;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .btn-danger {
+            background-color: #f44336;
+            border-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{common/header :: header}"></div>
+
+<div class="stream-container">
+    <div class="video-wrapper">
+        <img id="cameraView" alt="Video Stream">
+    </div>
+
+    <div class="controls">
+        <button id="startButton" class="btn btn-primary">Start</button>
+        <button id="stopButton" class="btn btn-danger" disabled>Stop</button>
+    </div>
+
+    <div class="result-section">
+        <h2>탐지 결과</h2>
+        <p id="resultText">데이터 기다리는 중...</p>
+    </div>
+</div>
+
+<!-- 온도 설정 모달 -->
+<div class="modal fade" id="temperatureModal" tabindex="-1" aria-labelledby="temperatureModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="temperatureModalLabel">온도 설정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="recommended-temp mb-4">
+                    <h6>추천 온도</h6>
+                    <div class="temp-display">
+                        <span id="recommendedTemp">20</span>°C
+                    </div>
+                </div>
+                <div class="custom-temp">
+                    <h6>설정 온도</h6>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="customTemp" min="16" max="30" step="0.5">
+                        <span class="input-group-text">°C</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary" id="saveTemp">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MQTT 연결 스크립트 -->
+<script type="text/javascript">
+    let client = null;
+    const pythonServerUrl = 'http://파이썬 Server IP:8080';
+    const broker = 'ws://파이썬 Server IP:9001';
+    const topic = 'cam/objects';
+
+    function connectMQTT() {
+        client = mqtt.connect(broker);
+
+        client.on("connect", () => {
+            console.log("브로커 연결 성공");
+            client.subscribe(topic, (err) => {
+                if(!err) {
+                    console.log(`토픽 구독: ${topic}`);
+                }// if END
+            });// client.subscribe END
+        });// client.on END
+
+        client.on("message", (topic, message) => {
+            try {
+                const payload = JSON.parse(message.toString());
+                updateDisplay(payload);
+            } catch(e) {
+                console.error('메시지 파싱 실패:', e);
+            }
+        });//client.on (message) END
+
+        client.on("error", (error) => {
+            console.error("MQTT 연결 오류:", error);
+        });
+
+        client.on("close", () => {
+            console.log("MQTT 연결 종료");
+        });
+    }// function connectMQTT() END
+
+    function disconnectMQTT() {
+        if (client) {
+            client.end();
+            client = null;
+            clearDisplay();
+        }// if END
+    }// function disconnectMQTT()
+
+    function updateDisplay(payload) {
+        const img = document.getElementById("cameraView");
+        img.src = `data:image/jpg;base64,${payload.image}`;
+        document.getElementById("resultText").innerText = payload.result || "결과 없음";
+    }// function updateDisplay END
+
+    function clearDisplay() {
+        document.getElementById("cameraView").src = '';
+        document.getElementById("resultText").innerText = "스트리밍 중지됨";
+    }// function clearDisplay() END
+</script>
+
+<!-- 온도 제어 스크립트 -->
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const temperatureModal = new bootstrap.Modal(document.getElementById('temperatureModal'));
+        const saveTemp = document.getElementById('saveTemp');
+        const customTemp = document.getElementById('customTemp');
+
+        // Start 버튼 클릭했을 때 실행되는 함수
+        startButton.addEventListener('click', async function() {
+            try {
+                startButton.disabled = true;
+                stopButton.disabled = false;
+
+                const response = await fetch(`${pythonServerUrl}/start`, {
+                    method: 'POST'
+                });
+                await response.json();
+                connectMQTT();
+
+            } catch (error) {
+                console.error('시작 실패:', error);
+                startButton.disabled = false;
+                stopButton.disabled = true;
+            }
+        });// startButton function END
+
+        // Stop 버튼 클릭했을때 실행되는 함수
+        stopButton.addEventListener('click', async function() {
+            try {
+                startButton.disabled = false;
+                stopButton.disabled = true;
+                disconnectMQTT();
+                await fetch(`${pythonServerUrl}/stop`, { method: 'POST' });
+            } catch (error) {
+                console.error('중지 실패:', error);
+            }
+        });// stopButton function END
+
+        // 온도 저장 버튼 클릭했을 때 실행되는 함수
+        saveTemp.addEventListener('click', async function() {
+            try {
+                const temperature = customTemp.value;
+                await fetch('/tf/temperature/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ temperature })
+                });
+                temperatureModal.hide();
+                alert('온도가 설정되었습니다.');
+            } catch (error) {
+                console.error('온도 설정 실패:', error);
+            }
+        });
+    });// saveTemp function END
+
+    function shouldShowModal(data) {
+        return true;
+    }
+
+    function calculateRecommendedTemp(data) {
+        return 20;
+    }
+</script>
+</body>
+</html>

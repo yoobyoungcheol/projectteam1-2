@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/header.css">
+</head>
+<body>
+<header th:fragment="header" class="header">
+  <div class="header-content">
+    <h1 class="logo">
+      <a href="/tf/main">UtopFlow <span>System</span></a>
+    </h1>
+    <nav>
+      <ul>
+        <li><a href="/tf/main">Home</a></li>
+        <li><a href="/tf/board/list">Memo</a></li>
+        <li><a href="/tf/data">Data</a></li>
+        <li><a href="/tf/contact">Setting</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+</body>
+</html>

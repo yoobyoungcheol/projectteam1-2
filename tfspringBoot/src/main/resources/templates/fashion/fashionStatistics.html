@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>의류 탐지 통계</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- https://waymond.tistory.com/56 -> Chart.js -->
+</head>
+<body>
+<th:block th:replace="~{common/header.html}"></th:block>
+
+<main class="container text-center">
+
+  <div>
+    <h2>탐지된 의류</h2>
+    <canvas id="fashionPieChart" width="400" height="400"></canvas>
+  </div>
+  <br>
+  <div>
+    <h2>실시간 탐지된 의류 개수</h2>
+    <canvas id="fashionBarChart" width="400" height="300"></canvas>
+  </div>
+  <br>
+  <div id="temperature-guide">
+    <h2>온도 조절 가이드</h2>
+    <p id="temperature-advice">데이터를 로딩 중...</p>
+  </div>
+  <br>
+  <div class="detected-fashion">
+    <h2>실시간으로 탐지된 의류 개수</h2>
+    <ul id="fashion-list"></ul>
+  </div>
+</main>
+
+<script>
+  async function fetchClothingData() {
+      const response = await fetch('/tf/fashion');
+      const data = await response.json();
+      updateAdvice(data); // 온도 조절 가이드 데이터
+      updatePieChart(data);  // 원형 차트 데이터
+      updateBarChart(data); // 바 차트 데이터
+      updateFashionList(data);  // 의류 목록 데이터
+  }
+
+  let pieChartInstance = null;   // 원형 차트 저장용 변수(차트 중복 생성 방지)
+  let barChartInstance = null;  // 바 차트 저장용 변수(차트 중복 생성 방지)
+
+  function updatePieChart(data) {
+      const ctx = document.getElementById('fashionPieChart').getContext('2d');
+
+      if (pieChartInstance) {
+      pieChartInstance.destroy();
+      }   // 기존 차트가 있으면 먼저 삭제
+
+  pieChartInstance = new Chart(ctx, {
+          type: 'pie',  // 차트의 종류 지정 pie -> 원형 차트
+          data: {
+              labels: ['아우터', '이너&아우터', '이너'],
+              datasets: [{
+                  label: '탐지된 의류 비율 (%)',
+                  data: [data.outerRatio, data.mixedRatio, data.innerRatio],
+                  backgroundColor: ['#ff6384', '#36a2eb', '#ffce56']
+              }]
+          },
+          options: {  // 차트 옵션 설정
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {  // 차트 기능 확장 및 사용자 정의 옵션 제공
+            legend: { // 차트 범례 설정
+            position: 'top',
+            labels: {
+            font: {
+            size: 14
+            }// font End
+            }// labels End
+            }// legend End
+            }// plugins End
+            }// options End
+      });
+  }
+
+  function updateBarChart(data) {
+      const ctx = document.getElementById('fashionBarChart').getContext('2d');
+
+      if (barChartInstance) {
+      barChartInstance.destroy();
+      }   // 기존 차트가 있으면 먼저 삭제
+
+  barChartInstance = new Chart(ctx, {
+          type: 'bar',  //차트의 종류 지정 bar -> 원형 차트
+          data: {
+              labels: ['코트', '자켓', '점퍼', '패딩', '조끼', '가디건', '블라우스', '셔츠', '스웨터'],
+              datasets: [{
+                  label: '탐지된 의류 개수',
+                  data: [data.coat, data.jacket, data.shirt, data.jumper, data.padding, data.vest, data.cardigan,
+                  data.blouse, data.sweater],
+                  backgroundColor: '#36a2eb'
+              }]
+          },
+          options: {  // 차트 옵션 설정
+            responsive: true,
+            maintainAspectRatio: false,
+            scales : {  // 축에 대한 옵션을 설정한다.
+            y: { // y축에 대한 옵션 설정
+            beginAtZero: true // y축이 0부터 시작할지 설정
+            } // y END
+            } // scales END
+            } // options END
+      });
+  }
+
+  function updateAdvice(data) {
+      let advice = "현재 온도를 유지하는 것이 좋습니다.";
+
+      if (data.innerRatio > 50) {
+       advice = "실내 온도를 낮추는 것이 좋습니다.";
+
+       } else if (data.outerRatio > 50) {
+       advice = "실내 온도를 높이는 것이 좋습니다.";
+
+       }
+      document.getElementById("temperature-advice").textContent = advice;
+  }
+
+  function updateFashionList(data) {
+
+  const fashionList = document.getElementById("fashion-list");
+  fashionList.innerHTML = ""; // 기존에 있던 목록 초기화
+
+  const items = [
+    {name: "코트", count: data.coat },
+    {name: "자켓", count: data.jacket },
+    {name: "점퍼", count: data.jumper },
+    {name: "패딩", count: data.padding },
+    {name: "조끼", count: data.vest },
+    {name: "가디건", count: data.cardigan },
+    {name: "블라우스", count: data.blouse },
+    {name: "셔츠", count: data.shirt },
+    {name: "스웨터", count: data.sweater }
+
+    ];
+
+    items.forEach(item => {
+    if (item.count > 0) {
+      const li = document.createElement("li");
+      li.textContent = `${item.name}: ${item.count}개`;
+      fashionList.appendChild(li);
+    }// if END
+
+    });
+
+    }
+
+  fetchClothingData();
+  setInterval(fetchClothingData, 5000);   // 데이터 5초마다 갱신
+</script>
+
+
+<th:block th:replace="~{common/footer.html}"></th:block>
+</body>
+</html>
