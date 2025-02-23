@@ -47,9 +47,10 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
 	implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
 	// https://mvnrepository.com/artifact/org.springframework/spring-messaging
-	implementation group: 'org.springframework', name: 'spring-messaging', version: '6.2.1'
+	implementation 'org.springframework:spring-messaging'
 	// Spring Integration MQTT
-	implementation group: 'org.springframework.integration', name: 'spring-integration-mqtt', version: '6.2.1'
+	implementation 'org.springframework.integration:spring-integration-mqtt'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'  // WebSocket
 
 }
 

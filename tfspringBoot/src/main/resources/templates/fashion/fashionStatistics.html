@@ -49,13 +49,17 @@
   let barChartInstance = null;  // 바 차트 저장용 변수(차트 중복 생성 방지)
 
   function updatePieChart(data) {
+      // 원형 차트에서 기존 차트가 있으면 먼저 삭제하는 함수
+
       const ctx = document.getElementById('fashionPieChart').getContext('2d');
+      //fashionPieChart라는 요소의 2D 컨텍스트를 가져온다.
 
       if (pieChartInstance) {
-      pieChartInstance.destroy();
-      }   // 기존 차트가 있으면 먼저 삭제
+      // 기존 차트가 있다면?
+      pieChartInstance.destroy();// 기존 차트 삭제
+      }
 
-  pieChartInstance = new Chart(ctx, {
+   pieChartInstance = new Chart(ctx, {
           type: 'pie',  // 차트의 종류 지정 pie -> 원형 차트
           data: {
               labels: ['아우터', '이너&아우터', '이너'],
@@ -83,13 +87,14 @@
   }
 
   function updateBarChart(data) {
+      // 바 차트에서 기존 차트가 있으면 먼저 삭제하는 함수
       const ctx = document.getElementById('fashionBarChart').getContext('2d');
 
       if (barChartInstance) {
       barChartInstance.destroy();
-      }   // 기존 차트가 있으면 먼저 삭제
+      }// 기존 차트가 있으면 먼저 삭제
 
-  barChartInstance = new Chart(ctx, {
+    barChartInstance = new Chart(ctx, {
           type: 'bar',  //차트의 종류 지정 bar -> 원형 차트
           data: {
               labels: ['코트', '자켓', '점퍼', '패딩', '조끼', '가디건', '블라우스', '셔츠', '스웨터'],
@@ -113,6 +118,8 @@
   }
 
   function updateAdvice(data) {
+  //의류 데이터에 따라 온도 조절에 대한 추천하는 함수
+
       let advice = "현재 온도를 유지하는 것이 좋습니다.";
 
       if (data.innerRatio > 50) {
@@ -126,10 +133,12 @@
   }
 
   function updateFashionList(data) {
+  //의류 데이터를 기반으로 패션 아이템 목록을 업데이트하는 함수
 
   const fashionList = document.getElementById("fashion-list");
   fashionList.innerHTML = ""; // 기존에 있던 목록 초기화
 
+  // 개수를 포함하는 배열 생성
   const items = [
     {name: "코트", count: data.coat },
     {name: "자켓", count: data.jacket },
@@ -144,10 +153,10 @@
     ];
 
     items.forEach(item => {
-    if (item.count > 0) {
-      const li = document.createElement("li");
-      li.textContent = `${item.name}: ${item.count}개`;
-      fashionList.appendChild(li);
+    if (item.count > 0) {// 아이템의 개수가 0보다 큰 경우
+      const li = document.createElement("li");// 리스트 생성
+      li.textContent = `${item.name}: ${item.count}개`;//"코트: 3개"와 같은 형식으로 표시
+      fashionList.appendChild(li);// 리스트에 추가
     }// if END
 
     });
@@ -157,8 +166,6 @@
   fetchClothingData();
   setInterval(fetchClothingData, 5000);   // 데이터 5초마다 갱신
 </script>
-
-
 <th:block th:replace="~{common/footer.html}"></th:block>
 </body>
 </html>

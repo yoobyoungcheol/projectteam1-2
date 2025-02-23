@@ -2,6 +2,8 @@ package com.TFteamAI.team1AI.dto.fashion;
 
 public class FashionDataDTO {
 
+    // fashion 개별 카테고리, 종류 구분, 비율, 비율 계산 정보를 담는 DTO
+
     private int coat;
     private int jacket;
     private int jumper;
@@ -9,6 +11,7 @@ public class FashionDataDTO {
     private int vest;
     private int cardigan;
     private int blouse;
+    private int top;
     private int shirt;
     private int sweater;
 
@@ -26,7 +29,7 @@ public class FashionDataDTO {
     }
 
     public FashionDataDTO(int coat, int jacket, int jumper, int padding, int vest,
-    int cardigan, int blouse, int shirt, int sweater) {
+                          int cardigan, int blouse, int top, int shirt, int sweater) {
         // 개별 의류들을 받아서 비율을 자동 계산하는 생성자
 
         this.coat = coat;
@@ -36,13 +39,14 @@ public class FashionDataDTO {
         this.vest = vest;
         this.cardigan = cardigan;
         this.blouse = blouse;
+        this.top = top;
         this.shirt = shirt;
         this.sweater = sweater;
 
 
         int outer = coat + jacket + jacket + jumper + padding;  // 아우터 계산
         int mixed = vest + cardigan + blouse;   // 이너&아우터 계산
-        int inner = sweater + shirt;// 이너 계산
+        int inner = top + sweater + shirt;// 이너 계산
         int total = outer + mixed + inner;  // total 변수에다가 모든 항목 합치기
         if (total == 0) total = 1;  // 0으로 나누기 방지
 
@@ -91,6 +95,10 @@ public class FashionDataDTO {
         return blouse;
     }
 
+    public int getTop() {
+        return top;
+    }
+
     public int getShirt() {
         return shirt;
     }
@@ -99,4 +107,3 @@ public class FashionDataDTO {
         return sweater;
     }
 }
-

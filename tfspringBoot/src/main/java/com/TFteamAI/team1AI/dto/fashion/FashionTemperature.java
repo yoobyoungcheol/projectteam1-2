@@ -1,6 +1,7 @@
 package com.TFteamAI.team1AI.dto.fashion;
 
 public class FashionTemperature {
+    // 패션과 관련된 온도 정보를 담는 DTO
 
     private double temperature;
 

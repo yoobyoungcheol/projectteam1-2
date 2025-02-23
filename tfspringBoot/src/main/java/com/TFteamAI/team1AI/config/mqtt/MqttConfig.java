@@ -1,3 +1,4 @@
+
 package com.TFteamAI.team1AI.config.mqtt;
 
 import lombok.extern.log4j.Log4j2;
@@ -33,8 +34,8 @@ public class MqttConfig {
             );
 
             MqttConnectOptions options = new MqttConnectOptions();
-            options.setAutomaticReconnect(true);
-            options.setCleanSession(true);
+            options.setAutomaticReconnect(true);// 브로커와의 연결이 끊어졌을 때 자동으로 재연결을 시도
+            options.setCleanSession(true);// 클라이언트의 세션 상태 관리 방식
             options.setConnectionTimeout(5);  // 타임아웃 5초로 설정
 
             try {

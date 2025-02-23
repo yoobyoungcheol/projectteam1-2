@@ -1,3 +1,4 @@
+
 package com.TFteamAI.team1AI.config;
 
 import org.springframework.context.annotation.Bean;
@@ -23,8 +24,7 @@ public class WebConfig implements WebMvcConfigurer {//컨트롤러 역할 대행
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // 모든 API에 대해 CORS 적용
-                        .allowedOrigins("백엔드 서버 IP",
-                                "http://파이썬 Server IP:8080") // 허용할 도메인
+                        .allowedOrigins("http://백엔드 Server IP") // 허용할 도메인
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
                         .allowedHeaders("*") // 모든 헤더 허용
                         .allowCredentials(true); // 쿠키 허용 (필요한 경우)

@@ -9,23 +9,107 @@
     <link rel="stylesheet" href="/css/board.css">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/footer.css">
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+        .board-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .board-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        .board-table th {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-bottom: 2px solid #dee2e6;
+            text-align: center;
+        }
+        .board-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+            text-align: center;
+        }
+        .board-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .title a {
+            color: #333;
+            text-decoration: none;
+        }
+        .title a:hover {
+            color: #007bff;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        .pagination a, .pagination span {
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            color: #333;
+            text-decoration: none;
+        }
+        .pagination .current {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .category-menu {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .category-list li {
+            margin-bottom: 0.5rem;
+        }
+        .category-list a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .category-list .active a {
+            background-color: #007bff;
+            color: white;
+        }
+        .temperature {
+            font-weight: bold;
+            color: #dc3545;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{common/header :: header}"></div>
 
 <div class="container">
-    <h2>Memo</h2>
     <div class="row">
-
         <!-- 카테고리 메뉴 -->
         <div class="col-md-3">
             <div class="category-menu">
-                <h3>카테고리 목록</h3>
+                <h3>Record</h3>
                 <ul class="category-list">
-                    <li class="active"><a href="/tf/board/list?category=notice">버그 리포트</a></li>
-                    <li><a href="/tf/board/list?category=personal">개인 메모</a></li>
-                    <li><a href="/tf/board/list?category=operation">운영 로그</a></li>
-                    <li><a href="/tf/board/list?category=etc">기타</a></li>
+                    <li th:class="${category == null || category == 'TEMPERATURE'} ? 'active'">
+                        <a href="/tf/board/list?category=TEMPERATURE">온도 설정 기록</a>
+                    </li>
+                    <li th:class="${category == 'SYSTEM_LOG '} ? 'active'">
+                        <a href="/tf/board/list?category=SYSTEM_LOG">시스템 로그 기록</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -33,62 +117,96 @@
         <!-- 게시글 목록 -->
         <div class="col-md-9">
             <div class="board-header">
-                <button onclick="location.href='/tf/board/create'" class="write-btn">글쓰기</button>
+                <h2 th:text="${category == 'SYSTEM_LOG' ? '시스템 로그 기록' : '온도 설정 기록'}">게시판</h2>
             </div>
 
-            <table class="board-table">
-                <colgroup>
-                    <col width="10%"/>
-                    <col width="45%"/>
-                    <col width="15%"/>
-                    <col width="10%"/>
-                </colgroup>
+            <!-- 온도 설정 기록 테이블 -->
+            <table class="board-table" th:if="${category != 'SYSTEM_LOG'}">
                 <thead>
                 <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일</th>
+                    <th width="8%">번호</th>
+                    <th width="15%">설정 온도</th>
+                    <th width="40%">탐지된 의류</th>
+                    <th width="15%">등록일</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="board, status : ${boards}">
                     <td th:text="${boards.totalElements - (boards.number * boards.size) - status.index}"></td>
-                    <td class="title">
-                        <a th:href="@{/tf/board/{id}(id=${board.boardId})}"
-                           th:text="${board.boardTitle}"></a>
+                    <td>
+                        <a th:href="@{/tf/board/{id}(id=${board.boardId})}" class="temperature"
+                           th:text="${board.setTemperature != null ? #numbers.formatDecimal(board.setTemperature, 1, 1) + '°C' : '-'}">
+                        </a>
                     </td>
-                    <td th:text="${board.boardWrite}"></td>
-                    <td th:text="${#temporals.format(board.createDate, 'MM-dd')}"></td>
+                    <td th:text="${board.detectedClothes}"></td>
+                    <td th:text="${#temporals.format(board.createDate, 'MM-dd HH:mm')}"></td>
                 </tr>
                 </tbody>
             </table>
 
-            <div class="pagination">
-                <!-- 이전 페이지 -->
-                <a th:if="${boards.hasPrevious()}"
-                   th:href="@{/tf/board/list(page=${boards.number - 1})}"
-                   class="prev">이전</a>
+            <table class="board-table" th:if="${category == 'SYSTEM_LOG'}">
+                <thead>
+                <tr>
+                    <th width="8%">번호</th>
+                    <th width="50%">제목</th>
+                    <th width="15%">작성자</th>
+                    <th width="15%">작성일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="board, status : ${boards}">
+                    <td th:text="${boards.totalElements - (boards.number * boards.size) - status.index}"></td>
+                    <td class="text-start">
+                        <a th:href="@{/tf/board/{id}(id=${board.boardId})}"
+                           th:text="${board.boardTitle}"></a>
+                    </td>
+                    <td th:text="${board.boardWrite}"></td>
+                    <td th:text="${#temporals.format(board.createDate, 'MM-dd HH:mm')}"></td>
+                </tr>
+                </tbody>
+            </table>
 
-                <!-- 페이지 번호들 -->
-                <th:block th:each="pageNumber : ${#numbers.sequence(0, boards.totalPages - 1)}">
-                    <a th:if="${pageNumber != boards.number}"
-                       th:href="@{/tf/board/list(page=${pageNumber})}"
-                       th:text="${pageNumber + 1}"></a>
-                    <span th:if="${pageNumber == boards.number}"
-                          th:text="${pageNumber + 1}"
-                          class="current"></span>
-                </th:block>
-
-                <!-- 다음 페이지 -->
-                <a th:if="${boards.hasNext()}"
-                   th:href="@{/tf/board/list(page=${boards.number + 1})}"
-                   class="next">다음</a>
-            </div>
+            <!-- 페이지네이션 -->
+            <nav th:if="${boards.totalPages > 0}">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${!boards.hasPrevious()} ? disabled">
+                        <a class="page-link"
+                           th:href="@{/tf/board/list(page=${boards.number - 1}, category=${category})}">&laquo;</a>
+                    </li>
+                    <li class="page-item"
+                        th:each="pageNum : ${#numbers.sequence(0, boards.totalPages - 1)}"
+                        th:classappend="${pageNum == boards.number} ? active">
+                        <a class="page-link"
+                           th:href="@{/tf/board/list(page=${pageNum}, category=${category})}"
+                           th:text="${pageNum + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${!boards.hasNext()} ? disabled">
+                        <a class="page-link"
+                           th:href="@{/tf/board/list(page=${boards.number + 1}, category=${category})}">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
 
 <div th:replace="~{common/footer :: footer}"></div>
+
+<script th:inline="javascript">
+    function deleteBoard(boardId) {
+        if (confirm('정말 삭제하시겠습니까?')) {
+            fetch(`/tf/board/${boardId}`, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    alert('삭제되었습니다.');
+                    window.location.reload();
+                } else {
+                    alert('삭제에 실패했습니다.');
+                }
+            });
+        }
+    }
+</script>
 </body>
 </html>

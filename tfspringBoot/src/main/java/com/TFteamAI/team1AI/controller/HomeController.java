@@ -1,3 +1,4 @@
+
 package com.TFteamAI.team1AI.controller;
 
 import com.TFteamAI.team1AI.dto.fashion.FashionDataDTO;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/tf")
-@CrossOrigin(origins = "백엔드 서버 IP")
+@CrossOrigin(origins = "http://백엔드 Server IP")
 
 public class HomeController {
 
@@ -28,8 +29,8 @@ public class HomeController {
         return "main";
     }
 
-    @GetMapping("ai")
-    public String viewfashionAi() {
+    @GetMapping("/ai")
+    public String viewAi() {
         // 실시간 의류 영상 스트리밍 페이지
 
         return "fashion/ai";

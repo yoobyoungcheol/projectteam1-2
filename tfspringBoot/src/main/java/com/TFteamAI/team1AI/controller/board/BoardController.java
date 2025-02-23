@@ -19,10 +19,15 @@ public class BoardController {
     private BoardService boardService;
 
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(defaultValue = "0") int page) {
-        Page<Board> boards = boardService.getBoardList(page);
+    public String list(Model model,
+                       @RequestParam(defaultValue = "0") int page,
+                       @RequestParam(required = false, defaultValue = "TEMPERATURE") String category) {
+        Page<Board> boards = boardService.getBoardListByCategory(page, category);
+
         model.addAttribute("boards", boards);
         model.addAttribute("currentPage", page);
+        model.addAttribute("category", category);
+
         return "board/list";
     }
 
